@@ -1,40 +1,45 @@
-const images = [
-  {
-    url: 'https://images.pexels.com/photos/140134/pexels-photo-140134.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-    alt: 'White and Black Long Fur Cat',
-  },
-  {
-    url: 'https://images.pexels.com/photos/213399/pexels-photo-213399.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-    alt: 'Orange and White Koi Fish Near Yellow Koi Fish',
-  },
-  {
-    url: 'https://images.pexels.com/photos/219943/pexels-photo-219943.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-    alt: 'Group of Horses Running',
-  },
-];
+/* Перепиши функцию makeTransaction() так, чтобы она не использовала callback-функции onSuccess и onError,
+а принимала всего один параметр transaction и возвращала промис. */
 
-const galleryEl = document.querySelector('#gallery');
-console.log(galleryEl);
-
-const makeElGalleryMarkup = images => {
-  return `
-  
-    <li class="gallery__item">
-      <img
-        
-        src = ${images.url} 
-        alt = '${images.alt}'
-        >
-    </li>
-      
-`;
+const randomIntegerFromInterval = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1) + min);
 };
-//console.log(makeElGalleryMarkup(images[0]));
 
-const makeGallery = images.map(makeElGalleryMarkup).join('');
-console.log(makeGallery);
+const makeTransaction = transaction => {
+  return new Promise((resolve, reject) => {
+    const delay = randomIntegerFromInterval(200, 500);
 
-galleryEl.insertAdjacentHTML('beforeend', makeGallery);
-console.log(galleryEl);
+    setTimeout(() => {
+      const canProcess = Math.random() > 0.3;
 
-galleryEl.classList.add('gallery__list', 'list', 'gallery-background');
+      if (canProcess) {
+        resolve(transaction.id, delay);
+      } else {
+        reject(transaction.id);
+      }
+    }, delay);
+  });
+};
+
+const logSuccess = (id, time) => {
+  console.log(`Transaction ${id} processed in ${time}ms`);
+};
+
+const logError = id => {
+  console.warn(`Error processing transaction ${id}. Please try again later.`);
+};
+
+/* Работает так */
+// makeTransaction({ id: 70, amount: 150 }, logSuccess, logError);
+// makeTransaction({ id: 71, amount: 230 }, logSuccess, logError);
+// makeTransaction({ id: 72, amount: 75 }, logSuccess, logError);
+// makeTransaction({ id: 73, amount: 100 }, logSuccess, logError);
+
+/* Должно работать так */
+makeTransaction({ id: 70, amount: 150 }).then(logSuccess).catch(logError);
+
+makeTransaction({ id: 71, amount: 230 }).then(logSuccess).catch(logError);
+
+makeTransaction({ id: 72, amount: 75 }).then(logSuccess).catch(logError);
+
+makeTransaction({ id: 73, amount: 100 }).then(logSuccess).catch(logError);
