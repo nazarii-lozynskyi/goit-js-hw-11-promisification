@@ -1,26 +1,30 @@
-/*Напиши скрипт, который для каждого элемента массива ingredients создаст отдельный li, 
-после чего вставит все li за одну операцию в список ul.ingredients*/
+/* Перепиши функцию toggleUserState() так, чтобы она не использовала callback-функцию callback,
+а принимала всего два параметра allUsers и userName и возвращала промис. */
 
-const ingredients = [
-  'Картошка',
-  'Грибы',
-  'Чеснок',
-  'Помидоры',
-  'Зелень',
-  'Приправы',
+const users = [
+  { name: 'Mango', active: true },
+  { name: 'Poly', active: false },
+  { name: 'Ajax', active: true },
+  { name: 'Lux', active: false },
 ];
 
-const ingredientsListEl = document.querySelector('#ingredients');
-console.log(ingredientsListEl);
-
-const createIngredientsList = ingredient => {
-  return ingredient.map(ingredient => {
-    const ingredientsItemEl = document.createElement('li');
-    ingredientsItemEl.textContent = ingredient;
-
-    return ingredientsItemEl;
-  });
+const toggleUserState = (allUsers, userName) => {
+  const updatedUsers = allUsers.map(user =>
+    user.name === userName ? { ...user, active: !user.active } : user
+  );
+  return Promise.resolve(updatedUsers);
 };
 
-const elements = createIngredientsList(ingredients);
-ingredientsListEl.append(...elements);
+const logger = updatedUsers => console.table(updatedUsers);
+
+/*
+  Сейчас работает так
+ */
+// toggleUserState(users, 'Mango', logger);
+// toggleUserState(users, 'Lux', logger);
+
+/*
+  Должно работать так
+ */
+toggleUserState(users, 'Mango').then(logger);
+toggleUserState(users, 'Lux').then(logger);
